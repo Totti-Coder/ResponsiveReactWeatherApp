@@ -19,11 +19,26 @@ const WeatherApp = () => {
                 </div>
             </div>
             <div className="weather">
-                <img src={sunny}   alt="sunny"/>
- 
+                <img src={sunny} alt="sunny"/>
+                <div className="weather-type">Despejado</div>
+                <div className="temp">28°</div>
+            </div>
+            <div className="weather-date">
+                <p>Jue, 6 Nov</p>
+            </div>
+            <div className="weather-data">
+                <div className="humidity">
+                    <div className="data-name">Humedad</div>
+                    <i className="fa-solid fa-droplet"></i>
+                    <div className="data">30%</div>
+                </div>
+                 <div className="wind">
+                    <div className="data-name">Viento</div>
+                    <i className="fa-solid fa-wind"></i>
+                    <div className="data">3 km h</div>
+                </div>
             </div>
         </div>
-      
     </div>
   );
 };
