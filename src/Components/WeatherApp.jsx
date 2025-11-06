@@ -2,12 +2,23 @@ import sunny from "../assets/images/sunny.png";
 import cloudy from "../assets/images/cloudy.png";
 import rainy from "../assets/images/rainy.png";
 import snowy from "../assets/images/snowy.png";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const WeatherApp = () => {
   const [data, setData] = useState({});
   const [location, setLocation] = useState("");
   const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
+
+  useEffect(() => {
+    const fetchDefaultWeather = async () => {
+      const defaultLocation = "Madrid";
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${defaultLocation}&appid=${apiKey}&units=metric&lang=es`;
+      const res = await fetch(url);
+      const defaultData = await res.json();
+      setData(defaultData);
+    };
+    fetchDefaultWeather();
+  }, []);
 
   const handleInputChange = (e) => {
     setLocation(e.target.value);
@@ -67,7 +78,6 @@ const WeatherApp = () => {
             <div className="data">{data.main ? data.main.humidity : null}%</div>
           </div>
           <div className="wind">
-            gy
             <div className="data-name">Viento</div>
             <i className="fa-solid fa-wind"></i>
             <div className="data">{data.wind ? data.wind.speed : null}km/h</div>
