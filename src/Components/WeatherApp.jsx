@@ -29,9 +29,14 @@ const WeatherApp = () => {
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric&lang=es`;
       const res = await fetch(url);
       const searchData = await res.json();
-      console.log(searchData);
-      setData(searchData);
-      setLocation("");
+      if (searchData.cod !== 200) {
+        // cod es un elemento de la respuesta que si nos da 200 es que todo ha funcionado correctamente
+        setData({ notFound: true });
+      } else {
+        console.log(searchData);
+        setData(searchData);
+        setLocation("");
+      }
     }
   };
 
@@ -40,9 +45,69 @@ const WeatherApp = () => {
       search();
     }
   };
+
+  const weatherImages = {
+    Clear: sunny,
+    Clouds: cloudy,
+    Rain: rainy,
+    Snow: snowy,
+    Haze: cloudy,
+    Mist: cloudy,
+  };
+
+  const weatherImage = data.weather
+    ? weatherImages[data.weather[0].main]
+    : null;
+
+  const backgroundImages = {
+    Clear: "linear-gradient(to right, #ff8c42, #fcd283)",
+    Clouds: "linear-gradient(to right, #4bc5c3 , #97f4f2)",
+    Rain: "linear-gradient(to right, #5bc8fb, #80eaff)",
+    Snow: "linear-gradient(to right, #aff2ff, #fff)",
+    Haze: "linear-gradient(to right, #ff8c42, #fcd283)",
+    Mist: "linear-gradient(to right, #e0e0e0, #b8c6db)",
+  };
+
+  const backgroundImage = data.weather
+    ? backgroundImages[data.weather[0].main]
+    : "linear-gradient(to right, #ff8c42, #fcd283)";
+
+  const currentDate = new Date();
+
+  const daysOfWeek = ["Dom", "Lun", "Mar", "Mier", "Juev", "Vier", "Sab"];
+
+  const months = [
+    "Ene",
+    "Feb",
+    "Mar",
+    "Abr",
+    "Ma",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dic",
+  ];
+
+  const dayOfWeek = daysOfWeek[currentDate.getDay()];
+  const month = months[currentDate.getMonth()];
+  const dayOfMonth = currentDate.getDate();
+
+  const formattedDate = `${dayOfWeek}, ${dayOfMonth} ${month} `;
+
   return (
-    <div className="container">
-      <div className="weather-app">
+    <div className="container" style={{ backgroundImage }}>
+      <div
+        className="weather-app"
+        style={{
+          backgroundImage:
+            backgroundImage && backgroundImage.replace
+              ? backgroundImage.replace("to right", "to top")
+              : null,
+        }}
+      >
         <div className="search">
           <div className="search-top">
             <i className="fa-solid fa-location-dot"></i>
@@ -59,8 +124,10 @@ const WeatherApp = () => {
             <i className="fa-solid fa-magnifying-glass" onClick={search}></i>
           </div>
         </div>
-        <div className="weather">
-          <img src={sunny} alt="sunny" />
+        {data.notFound ? (<div className="not-found">Sin Resultado 😒</div>) : (
+          <>
+          <div className="weather">
+          <img src={weatherImage} alt="sunny" />
           <div className="weather-type">
             {data.weather ? data.weather[0].main : null}
           </div>
@@ -69,7 +136,7 @@ const WeatherApp = () => {
           </div>
         </div>
         <div className="weather-date">
-          <p>Jue, 6 Nov</p>
+          <p>{formattedDate}</p>
         </div>
         <div className="weather-data">
           <div className="humidity">
@@ -83,6 +150,9 @@ const WeatherApp = () => {
             <div className="data">{data.wind ? data.wind.speed : null}km/h</div>
           </div>
         </div>
+        </>
+        )}
+        
       </div>
     </div>
   );
